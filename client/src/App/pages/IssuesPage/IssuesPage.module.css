@@ -1,0 +1,48 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 0;
+}
+
+.searchInputs {
+  display: flex;
+  justify-content: space-between;
+}
+
+.tasksContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px 0;
+}
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card {
+  height: auto;
+  display: flex;
+  align-items: center;
+  width: 30%;
+  font-size: 16px;
+  padding: 10px;
+  gap: 15px;
+}
+
+.priority {
+  display: flex;
+  align-items: center;
+  height: 30px;
+  width: 30px;
+}
+
+.title {
+  width: 100%;
+}
+
+.search {
+  min-width: 320px;
+}
