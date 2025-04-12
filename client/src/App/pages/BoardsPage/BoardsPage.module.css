@@ -1,0 +1,50 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 0;
+}
+
+.boardsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 50px 0;
+}
+
+.boards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 50px;
+  padding: 0 100px;
+  justify-content: center;
+}
+
+.board {
+  height: 390px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 400px;
+  padding: 10px;
+  gap: 15px;
+}
+
+.txtContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  padding-top: 10px;
+  padding-left: 10px;
+}
+
+.btnContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  padding: 15px 0;
+}
+
+.label {
+  width: max-content;
+  cursor: default;
+}

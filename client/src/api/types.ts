@@ -18,3 +18,10 @@ export interface Task {
 type Status = "Backlog" | "Done" | "InProgress";
 
 type Priority = "Low" | "Medium" | "High";
+
+export interface Board {
+  id: number;
+  name: string;
+  description: string;
+  taskCount: number;
+}

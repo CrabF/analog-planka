@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { Task } from "./types";
+import { Board, Task } from "./types";
 
 export const api = createApi({
   reducerPath: "api",
@@ -8,7 +8,10 @@ export const api = createApi({
     getAllTasks: build.query<{ data: Task[] }, void>({
       query: () => ({ url: "tasks" }),
     }),
+    getAllboards: build.query<{ data: Board[] }, void>({
+      query: () => ({ url: "boards" }),
+    }),
   }),
 });
 
-export const { useGetAllTasksQuery } = api;
+export const { useGetAllTasksQuery, useGetAllboardsQuery } = api;
