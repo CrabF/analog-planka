@@ -1,0 +1,41 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  padding: 40px 100px;
+  align-items: center;
+  gap: 30px;
+}
+
+.board {
+  display: flex;
+  gap: 30px;
+  width: 100%;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 20px;
+  flex: 1 1;
+  gap: 20px;
+}
+
+.card {
+  background-color: var(--g-color-base-brand);
+  padding: 10px;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  cursor: pointer;
+}
+
+.title {
+  width: 100%;
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  height: 30px;
+  width: 30px;
+}

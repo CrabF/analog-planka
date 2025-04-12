@@ -25,3 +25,5 @@ export interface Board {
   description: string;
   taskCount: number;
 }
+
+export type BoardInfo = Omit<Task, "assigneeId" | "boardId" | "boardName">;
