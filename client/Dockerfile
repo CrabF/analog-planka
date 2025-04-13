@@ -16,4 +16,4 @@ COPY --from=builder /app/dist /app
 
 EXPOSE 8080
 
-CMD ["npx", "http-server", "/app"]
+CMD ["npx", "http-server", "--proxy","http://localhost:8080?", "/app"]

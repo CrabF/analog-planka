@@ -5,7 +5,7 @@ import { BoardPage, BoardsPage, IssuesPage } from "pages/index";
 export const RouterProvider = () => (
   <BrowserRouter>
     <Routes>
-      <Route path="/" element={<Layout />}>
+      <Route element={<Layout />}>
         <Route path="/issues" element={<IssuesPage />} />
         <Route path="/boards" element={<BoardsPage />} />
         <Route path="/board/:id" element={<BoardPage />} />
