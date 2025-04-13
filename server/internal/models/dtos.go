@@ -108,6 +108,7 @@ type GetTaskByIDResponse struct {
 	Status      string              `json:"status" enums:"Backlog,InProgress,Done" example:"Done"`
 	Assignee    AssigneeUserForTask `json:"assignee"`
 	BoardName   string              `json:"boardName"`
+	BoardID     uint                `json:"boardId"`
 }
 
 // GetTasksOnBoardResponse содержит информацию о задачах на доске
