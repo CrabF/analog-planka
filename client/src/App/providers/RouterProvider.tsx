@@ -9,7 +9,7 @@ export const RouterProvider = () => (
         <Route path="/issues" element={<IssuesPage />} />
         <Route path="/boards" element={<BoardsPage />} />
         <Route path="/board/:id" element={<BoardPage />} />
-        <Route path="*" element={<Navigate to={"/boards"} />} />
+        <Route path="*" element={<Navigate to={"/issues"} />} />
       </Route>
     </Routes>
   </BrowserRouter>
