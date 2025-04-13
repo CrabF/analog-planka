@@ -15,9 +15,9 @@ export interface Task {
   title: string;
 }
 
-type Status = "Backlog" | "Done" | "InProgress";
+export type Status = "Backlog" | "Done" | "InProgress";
 
-type Priority = "Low" | "Medium" | "High";
+export type Priority = "Low" | "Medium" | "High";
 
 export interface Board {
   id: number;
@@ -28,4 +28,25 @@ export interface Board {
 
 export type BoardInfo = Omit<Task, "assigneeId" | "boardId" | "boardName">;
 
-export type TaskInfo = Omit<Task, "assigneeId" | "boardId">;
+export type TaskInfo = Omit<Task, "assigneeId">;
+
+export interface NewTask {
+  assigneeId: number;
+  boardId: number;
+  description: string;
+  priority: Priority;
+  title: string;
+}
+
+export type UpdatedTask = NewTask & { status: Status };
+
+export interface User {
+  id: number;
+  fullName: string;
+  email: string;
+  description: string;
+  avatarUrl: string;
+  teamId: number;
+  teamName: string;
+  tasksCount: number;
+}

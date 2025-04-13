@@ -13,21 +13,22 @@ import { FC, useEffect, useState } from "react";
 import { Xmark } from "@gravity-ui/icons";
 import { useLocation, useNavigate, useSearchParams } from "react-router";
 import {
+  useCreateNewTaskMutation,
   useGetAllboardsQuery,
   useGetAllTasksQuery,
+  useGetAllUsersInfoQuery,
   useGetTaskInfoQuery,
+  useUpdateTaskInfoMutation,
 } from "@/api/api";
 import { skipToken } from "@reduxjs/toolkit/query";
+import { Priority, Status } from "@/api/types";
 
 interface GlobalModalProps {
   open: boolean;
   onClose: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const GlobalModal: FC<GlobalModalProps> = ({
-  open,
-  onClose,
-}) => {
+export const GlobalModal: FC<GlobalModalProps> = ({ open, onClose }) => {
   const { data: tasks } = useGetAllTasksQuery();
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
@@ -38,71 +39,58 @@ export const GlobalModal: FC<GlobalModalProps> = ({
   const [descriptionValue, setDescriptionValue] = useState("");
   const [priorityValue, setPriorityValue] = useState<string[]>([]);
   const [status, setStatus] = useState<string[]>([]);
-  const [assigneeList, setAssigneeList] = useState<string[]>([]);
-  const [selectedAssignee, setSelectedAssignee] = useState<string[]>([]);
-  const [boardsNames, setBoardsNames] = useState<string[]>([]);
-  const [selectedBoardName, setSelectedBoardName] = useState<string[]>([]);
-  const [boardLink, setBoardLink] = useState("");
+  const [selectedAssigneeId, setSelectedAssigneeId] = useState<string[]>([]);
+  const [selectedBoardId, setSelectedBoardId] = useState<string[]>([]);
   const { data: allBoards } = useGetAllboardsQuery();
+
+  const { data: usersInfo } = useGetAllUsersInfoQuery();
+
+  const [create, { isLoading: isCreateLoading }] = useCreateNewTaskMutation();
+  const [update, { isLoading: isUpdLoading }] = useUpdateTaskInfoMutation();
 
   const modalType = modalInfo ? "Редактирование" : "Создание";
   const modalTypeBtn = modalInfo ? "Обновить" : "Создать";
 
+  const handleSumbitCreate = () => {
+    create({
+      title: titleInputValue,
+      assigneeId: Number(selectedAssigneeId[0]),
+      boardId: Number(selectedBoardId),
+      description: descriptionValue,
+      priority: priorityValue[0] as Priority,
+    }).then(() => {
+      handleCloseModal();
+    });
+  };
+
+  const handleSubmitUpd = () => {
+    if (modalInfo) {
+      update({
+        updatedTask: {
+          title: titleInputValue,
+          assigneeId: Number(selectedAssigneeId[0]),
+          boardId: Number(selectedBoardId),
+          description: descriptionValue,
+          priority: priorityValue[0] as Priority,
+          status: status[0] as Status,
+        },
+        taskId: modalInfo?.data.id,
+      }).then(() => {
+        handleCloseModal();
+      });
+    }
+  };
+
   useEffect(() => {
     setCardId(searchParams.get("card"));
-    if (allBoards && modalInfo) {
-      const board = allBoards?.data.find((board) => {
-        return board.name === modalInfo?.data.boardName;
-      });
-      if (board) {
-        setBoardLink(board.id.toString());
-      }
-    }
 
     if (modalInfo) {
       setTitleInputValue(modalInfo.data.title);
       setDescriptionValue(modalInfo.data.description);
       setPriorityValue([modalInfo.data.priority]);
       setStatus([modalInfo.data.status]);
-    }
-
-    if (tasks) {
-      const boardsNames = tasks?.data
-        .map((item) => {
-          return item.boardName;
-        })
-        .filter((item, index, arr) => {
-          return (
-            arr.findIndex((i) => {
-              return i === item;
-            }) === index
-          );
-        });
-      setBoardsNames(boardsNames);
-      setSelectedBoardName(
-        boardsNames.filter((item) => {
-          return modalInfo?.data.boardName === item;
-        })
-      );
-
-      const assigneeList = tasks?.data
-        .map((item) => {
-          return item.assignee.fullName;
-        })
-        .filter((item, index, arr) => {
-          return (
-            arr.findIndex((i) => {
-              return i === item;
-            }) === index
-          );
-        });
-
-      setAssigneeList(assigneeList);
-      setSelectedAssignee(
-        assigneeList.filter((item) => {
-          return modalInfo?.data.assignee.fullName === item;
-        })
-      );
+      setSelectedAssigneeId([modalInfo.data.assignee.id.toString()]);
+      setSelectedBoardId([modalInfo.data.boardId.toString()]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [modalInfo, tasks, allBoards, cardId]);
@@ -131,7 +119,7 @@ export const GlobalModal: FC<GlobalModalProps> = ({
             size="xl"
             type="text"
             view="normal"
-            placeholder="Название"
+            label="Название"
             value={titleInputValue}
             onChange={(e) => {
               handleInputChange(e.target.value);
@@ -144,26 +132,27 @@ export const GlobalModal: FC<GlobalModalProps> = ({
             placeholder="Описание"
             size="xl"
             value={descriptionValue}
+            onUpdate={setDescriptionValue}
           ></TextArea>
 
           <Select
-            placeholder={"Проект"}
+            label="Проект"
             disabled={location.pathname.includes("board")}
-            value={selectedBoardName}
-            onUpdate={setSelectedBoardName}
+            value={selectedBoardId}
+            onUpdate={setSelectedBoardId}
             size="xl"
           >
-            {boardsNames.map((item) => {
+            {allBoards?.data.map((item) => {
               return (
-                <Select.Option key={item} value={item}>
-                  {item}
+                <Select.Option key={item.id} value={item.id.toString()}>
+                  {item.name}
                 </Select.Option>
               );
             })}
           </Select>
 
           <Select
-            placeholder={"Приоритет"}
+            label="Приоритет"
             value={priorityValue}
             onUpdate={setPriorityValue}
             size="xl"
@@ -173,27 +162,22 @@ export const GlobalModal: FC<GlobalModalProps> = ({
             <Select.Option value="High">High</Select.Option>
           </Select>
 
-          <Select
-            placeholder={"Статус"}
-            value={status}
-            onUpdate={setStatus}
-            size="xl"
-          >
+          <Select label="Статус" value={status} onUpdate={setStatus} size="xl">
             <Select.Option value="Backlog">To do</Select.Option>
             <Select.Option value="InProgress">In progress</Select.Option>
             <Select.Option value="Done">Done</Select.Option>
           </Select>
 
           <Select
-            placeholder={"Исполнитель"}
-            value={selectedAssignee}
-            onUpdate={setSelectedAssignee}
+            label="Исполнитель"
+            value={selectedAssigneeId}
+            onUpdate={setSelectedAssigneeId}
             size="xl"
           >
-            {assigneeList.map((item) => {
+            {usersInfo?.data.map((item) => {
               return (
-                <Select.Option key={item} value={item}>
-                  {item}
+                <Select.Option key={item.id} value={item.id.toString()}>
+                  {item.fullName}
                 </Select.Option>
               );
             })}
@@ -201,14 +185,20 @@ export const GlobalModal: FC<GlobalModalProps> = ({
           {!location.pathname.includes("board") && cardId && (
             <Button
               onClick={() => {
-                navigate(`/board/${boardLink}`);
+                navigate(`/board/${selectedBoardId}?card=${cardId}`);
               }}
               size="xl"
             >
               Перейти на доску
             </Button>
           )}
-          <Button size="xl">{modalTypeBtn}</Button>
+          <Button
+            loading={isUpdLoading || isCreateLoading}
+            onClick={cardId ? handleSubmitUpd : handleSumbitCreate}
+            size="xl"
+          >
+            {modalTypeBtn}
+          </Button>
         </Card>
       </Modal>
     </Portal>

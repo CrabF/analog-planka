@@ -1,15 +1,25 @@
-import { Card, Text, Button, Label } from "@gravity-ui/uikit";
+import { Card, Text, Button, Label, Skeleton } from "@gravity-ui/uikit";
 import styles from "./BoardsPage.module.css";
 import { useGetAllboardsQuery } from "@/api/api";
 import { useNavigate } from "react-router";
 
 export const BoardsPage = () => {
-  const { data: boards } = useGetAllboardsQuery();
+  const { data: boards, isLoading } = useGetAllboardsQuery();
   const navigate = useNavigate();
 
   const handleBoardClick = (id: string) => {
     navigate(`/board/${id}`);
   };
+
+  if (isLoading) {
+    return (
+      <div className={styles.skeletonBox}>
+        {Array.from({ length: 10 }).map((_, index) => {
+          return <Skeleton key={index} className={styles.skeleton} />;
+        })}
+      </div>
+    );
+  }
   return (
     <div className={styles.container}>
       <div className={styles.boardsContainer}>

@@ -1,10 +1,10 @@
 import { useParams, useSearchParams } from "react-router";
 import styles from "./BoardPage.module.css";
-import { Card, Text } from "@gravity-ui/uikit";
+import { Card, Skeleton, Text } from "@gravity-ui/uikit";
 import { useGetAllboardsQuery, useGetBoardInfoQuery } from "@/api/api";
 import { ChevronsUpWide, ChevronsDownWide, Bars } from "@gravity-ui/icons";
 import { TaskComponent } from "@/components/Task/Task";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { GlobalModal } from "@/components/GlobalModal";
 
 const priorityIcon = {
@@ -18,8 +18,10 @@ const priorityIcon = {
 export const BoardPage = () => {
   const [issueModalOpen, setIssueModalOpen] = useState(false);
   const { id } = useParams();
-  const { data } = useGetBoardInfoQuery(id as string);
-  const { data: boards } = useGetAllboardsQuery();
+  const { data, isLoading: isBoardLoading } = useGetBoardInfoQuery(
+    id as string,
+  );
+  const { data: boards, isLoading: isBoardsLoading } = useGetAllboardsQuery();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const boardAdditionalInfo = boards?.data.find((item) => {
@@ -34,6 +36,22 @@ export const BoardPage = () => {
       setIssueModalOpen(!issueModalOpen);
     }, 100);
   };
+
+  useEffect(() => {
+    if (searchParams.get("card")) {
+      setIssueModalOpen(!issueModalOpen);
+    }
+  }, []);
+
+  if (isBoardLoading || isBoardsLoading) {
+    return (
+      <div className={styles.skeletonBox}>
+        {Array.from({ length: 10 }).map((_, index) => {
+          return <Skeleton key={index} className={styles.skeleton} />;
+        })}
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>

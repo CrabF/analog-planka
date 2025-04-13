@@ -40,3 +40,15 @@
   display: flex;
   justify-content: space-between;
 }
+
+.skeleton {
+  height: 50px;
+}
+
+.skeletonBox {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0 150px;
+  padding: 100px 100px;
+}

@@ -7,7 +7,7 @@
       "components/*": ["src/components/*"],
       "pages/*": ["src/App/pages/*"],
       "api/*": ["src/api/*"],
-      "styles/*": ["src/styles/*"],
+      "styles/*": ["src/styles/*"]
     }
   },
   "files": [],

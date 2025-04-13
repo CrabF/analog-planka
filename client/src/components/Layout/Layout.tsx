@@ -1,12 +1,13 @@
-import { Link, Outlet } from "react-router";
+import { Link, Outlet, useLocation } from "react-router";
 import styles from "./Layout.module.css";
-import { TabProvider, TabList, Tab, TabPanel, Button } from "@gravity-ui/uikit";
-import { useState } from "react";
+import { TabProvider, TabList, Tab, Button } from "@gravity-ui/uikit";
+import { useEffect, useState } from "react";
 import { GlobalModal } from "components/GlobalModal";
 
 export const Layout = () => {
-  const [activeTab, setActiveTab] = useState<string>("tasks");
+  const [activeTab, setActiveTab] = useState<string>("");
   const [open, setOpen] = useState(false);
+  const location = useLocation();
 
   const handleClickTab = (val: string) => {
     setActiveTab(val);
@@ -15,6 +16,15 @@ export const Layout = () => {
   const handleClickBtn = () => {
     setOpen(!open);
   };
+
+  useEffect(() => {
+    const tabName = location.pathname.includes("issues");
+    if (tabName) {
+      setActiveTab("tasks");
+    } else {
+      setActiveTab("boards");
+    }
+  }, [location]);
 
   return (
     <>
@@ -28,14 +38,9 @@ export const Layout = () => {
               <Tab value="tasks">Все задачи</Tab>
             </Link>
             <Link className={styles.link} to={"/boards"}>
-              <Tab value="projects">Проекты</Tab>
+              <Tab value="boards">Проекты</Tab>
             </Link>
           </TabList>
-          <div>
-            <TabPanel value="first">First Panel</TabPanel>
-            <TabPanel value="second">Second Panel</TabPanel>
-            <TabPanel value="third">Third Panel</TabPanel>
-          </div>
         </TabProvider>
         <Button onClick={handleClickBtn} view="action" size="xl">
           Создать задачу

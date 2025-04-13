@@ -19,3 +19,15 @@
   flex: 1 1;
   gap: 20px;
 }
+
+.skeleton {
+  height: 50px;
+}
+
+.skeletonBox {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0 150px;
+  padding: 100px 100px;
+}
