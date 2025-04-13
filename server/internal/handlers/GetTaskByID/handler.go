@@ -84,6 +84,7 @@ func prepareTaskResponse(task *models.Task) models.GetTaskByIDResponse {
 			AvatarURL: task.Assignee.AvatarURL,
 		},
 		BoardName: task.Board.Name,
+		BoardID:   task.Board.ID,
 	}
 }
 
