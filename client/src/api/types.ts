@@ -27,3 +27,5 @@ export interface Board {
 }
 
 export type BoardInfo = Omit<Task, "assigneeId" | "boardId" | "boardName">;
+
+export type TaskInfo = Omit<Task, "assigneeId" | "boardId">;

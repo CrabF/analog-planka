@@ -1,15 +1,8 @@
 import { Link, Outlet } from "react-router";
 import styles from "./Layout.module.css";
-import {
-  TabProvider,
-  TabList,
-  Tab,
-  TabPanel,
-  Button,
-  Modal,
-  Portal,
-} from "@gravity-ui/uikit";
+import { TabProvider, TabList, Tab, TabPanel, Button } from "@gravity-ui/uikit";
 import { useState } from "react";
+import { GlobalModal } from "components/GlobalModal";
 
 export const Layout = () => {
   const [activeTab, setActiveTab] = useState<string>("tasks");
@@ -47,11 +40,7 @@ export const Layout = () => {
         <Button onClick={handleClickBtn} view="action" size="xl">
           Создать задачу
         </Button>
-        <Portal>
-          <Modal open={open} onClose={handleClickBtn}>
-            content
-          </Modal>
-        </Portal>
+        <GlobalModal open={open} onClose={handleClickBtn} />
       </div>
       <div className={styles.container}>
         <Outlet />

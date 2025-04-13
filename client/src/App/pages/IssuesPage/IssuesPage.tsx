@@ -1,29 +1,22 @@
-import {
-  TextInput,
-  Button,
-  Portal,
-  Modal,
-  Select,
-  Card,
-  User,
-  Text,
-} from "@gravity-ui/uikit";
+import { TextInput, Button, Select } from "@gravity-ui/uikit";
 import styles from "./IssuesPage.module.css";
 import { useEffect, useState } from "react";
 import { useGetAllTasksQuery } from "@/api/api";
-import { IssueModal } from "./components/IssueModal";
 import { useSearchParams } from "react-router";
 import { ChevronsUpWide, ChevronsDownWide, Bars } from "@gravity-ui/icons";
 import { Task } from "@/api/types";
+import { TaskComponent } from "@/components/Task/Task";
+import { GlobalModal } from "@/components/GlobalModal";
 
 const priorityIcon = {
-  High: <ChevronsUpWide />,
-  Low: <ChevronsDownWide />,
-  Medium: <Bars />,
+  High: <ChevronsUpWide fill="currentColor" stroke="#7e2121" color="#7e2121" />,
+  Low: (
+    <ChevronsDownWide fill="currentColor" stroke="#1a1a8d" color="#1a1a8d" />
+  ),
+  Medium: <Bars fill="currentColor" stroke="#d3b410" color="#d3b410" />,
 };
 
 export const IssuesPage = () => {
-  const [open, setOpen] = useState(false);
   const [issueModalOpen, setIssueModalOpen] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const [inputValue, setInputValue] = useState("");
@@ -34,14 +27,16 @@ export const IssuesPage = () => {
   const displayedTasks = filteredTasks ? filteredTasks : tasks?.data || [];
 
   const handleClickBtn = () => {
-    setOpen(!open);
+    setIssueModalOpen(!issueModalOpen);
   };
 
   const handleCardClick = (id: number) => {
     const newParams = new URLSearchParams(searchParams);
     newParams.set("card", id.toString());
     setSearchParams(newParams);
-    setIssueModalOpen(!issueModalOpen);
+    setTimeout(() => {
+      setIssueModalOpen(!issueModalOpen);
+    }, 100);
   };
 
   const handleSearchInput = (value: string) => {
@@ -120,20 +115,14 @@ export const IssuesPage = () => {
           {displayedTasks.map((item) => {
             const priorityElem = priorityIcon[item.priority];
             return (
-              <Card
-                className={styles.card}
-                size="m"
-                view="filled"
-                type="selection"
+              <TaskComponent
                 key={item.id}
                 onClick={() => {
                   handleCardClick(item.id);
                 }}
-              >
-                <div className={styles.priority}>{priorityElem}</div>
-                <Text className={styles.title}>{item.title}</Text>
-                <User avatar={item.assignee.avatarUrl} />
-              </Card>
+                task={item}
+                icon={priorityElem}
+              />
             );
           })}
         </div>
@@ -143,20 +132,12 @@ export const IssuesPage = () => {
           </Button>
         </div>
       </div>
-      <Portal>
-        <Modal open={open} onClose={handleClickBtn}>
-          не контент
-        </Modal>
-      </Portal>
-
-      <Portal>
-        {issueModalOpen && (
-          <IssueModal
-            issueModalOpen={issueModalOpen}
-            onClose={setIssueModalOpen}
-          ></IssueModal>
-        )}
-      </Portal>
+      {issueModalOpen && (
+        <GlobalModal
+          open={issueModalOpen}
+          onClose={setIssueModalOpen}
+        />
+      )}
     </div>
   );
 };

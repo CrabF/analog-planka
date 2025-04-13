@@ -19,23 +19,3 @@
   flex: 1 1;
   gap: 20px;
 }
-
-.card {
-  background-color: var(--g-color-base-brand);
-  padding: 10px;
-  display: flex;
-  gap: 15px;
-  align-items: center;
-  cursor: pointer;
-}
-
-.title {
-  width: 100%;
-}
-
-.icon {
-  display: flex;
-  align-items: center;
-  height: 30px;
-  width: 30px;
-}

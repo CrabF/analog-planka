@@ -1,0 +1,29 @@
+
+.icon {
+  display: flex;
+  align-items: center;
+  height: 30px;
+  width: 30px;
+  cursor: pointer;
+}
+
+.title {
+  width: 100%;
+}
+
+.search {
+  min-width: 320px;
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  gap: 25px;
+  min-width: 600px;
+}
+
+.titleTxt {
+  display: flex;
+  justify-content: space-between;
+}

@@ -1,8 +1,11 @@
-import { useParams } from "react-router";
+import { useParams, useSearchParams } from "react-router";
 import styles from "./BoardPage.module.css";
-import { Card, Text, User } from "@gravity-ui/uikit";
+import { Card, Text } from "@gravity-ui/uikit";
 import { useGetAllboardsQuery, useGetBoardInfoQuery } from "@/api/api";
 import { ChevronsUpWide, ChevronsDownWide, Bars } from "@gravity-ui/icons";
+import { TaskComponent } from "@/components/Task/Task";
+import { useState } from "react";
+import { GlobalModal } from "@/components/GlobalModal";
 
 const priorityIcon = {
   High: <ChevronsUpWide fill="currentColor" stroke="#7e2121" color="#7e2121" />,
@@ -13,13 +16,24 @@ const priorityIcon = {
 };
 
 export const BoardPage = () => {
+  const [issueModalOpen, setIssueModalOpen] = useState(false);
   const { id } = useParams();
   const { data } = useGetBoardInfoQuery(id as string);
   const { data: boards } = useGetAllboardsQuery();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const boardAdditionalInfo = boards?.data.find((item) => {
     return item.id.toString() === id;
   });
+
+  const handleCardClick = (id: number) => {
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set("card", id.toString());
+    setSearchParams(newParams);
+    setTimeout(() => {
+      setIssueModalOpen(!issueModalOpen);
+    }, 100);
+  };
 
   return (
     <div className={styles.container}>
@@ -34,19 +48,14 @@ export const BoardPage = () => {
             .map((item) => {
               const priorityElem = priorityIcon[item.priority];
               return (
-                <Card
-                  className={styles.card}
-                  size="m"
-                  view="filled"
-                  type="action"
+                <TaskComponent
                   key={item.id}
-                >
-                  <div className={styles.icon}>{priorityElem}</div>
-                  <Text variant="body-3" className={styles.title}>
-                    {item.title}
-                  </Text>
-                  <User avatar={item.assignee.avatarUrl} />
-                </Card>
+                  task={item}
+                  icon={priorityElem}
+                  onClick={() => {
+                    handleCardClick(item.id);
+                  }}
+                />
               );
             })}
         </Card>
@@ -59,19 +68,14 @@ export const BoardPage = () => {
             .map((item) => {
               const priorityElem = priorityIcon[item.priority];
               return (
-                <Card
-                  className={styles.card}
-                  size="m"
-                  view="filled"
-                  type="action"
+                <TaskComponent
                   key={item.id}
-                >
-                  <div className={styles.icon}>{priorityElem}</div>
-                  <Text variant="body-3" className={styles.title}>
-                    {item.title}
-                  </Text>
-                  <User avatar={item.assignee.avatarUrl} />
-                </Card>
+                  onClick={() => {
+                    handleCardClick(item.id);
+                  }}
+                  task={item}
+                  icon={priorityElem}
+                />
               );
             })}
         </Card>
@@ -84,23 +88,21 @@ export const BoardPage = () => {
             .map((item) => {
               const priorityElem = priorityIcon[item.priority];
               return (
-                <Card
-                  className={styles.card}
-                  size="m"
-                  view="filled"
-                  type="action"
+                <TaskComponent
                   key={item.id}
-                >
-                  <div className={styles.icon}>{priorityElem}</div>
-                  <Text variant="body-3" className={styles.title}>
-                    {item.title}
-                  </Text>
-                  <User avatar={item.assignee.avatarUrl} />
-                </Card>
+                  onClick={() => {
+                    handleCardClick(item.id);
+                  }}
+                  task={item}
+                  icon={priorityElem}
+                />
               );
             })}
         </Card>
       </div>
+      {issueModalOpen && (
+        <GlobalModal open={issueModalOpen} onClose={setIssueModalOpen} />
+      )}
     </div>
   );
 };
