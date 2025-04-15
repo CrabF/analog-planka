@@ -58,6 +58,6 @@
 docker-compose up --build
 
 Frontend исполняется на порту :3000
-Backend исполнятеся на порту :8080
+Backend исполняется на порту :8080
 
 
