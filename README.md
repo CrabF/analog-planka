@@ -57,7 +57,7 @@
  ```bash
 docker-compose up --build
 
-Frontend исполняется на порту :3000
-Backend исполняется на порту :8080
+Frontend исполняется на http://localhost:3000/
+Backend API на http://127.0.0.1:8080/swagger/index.html
 
 
